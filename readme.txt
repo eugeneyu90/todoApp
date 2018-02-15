@@ -1,7 +1,7 @@
 To-Do List App
 
 STRUCTURE
-TodoApp
+TodoApp < []> 
 	- Todo Input Bar
 	- Todo List
 		- Todo Item

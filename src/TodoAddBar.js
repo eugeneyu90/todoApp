@@ -15,7 +15,7 @@ var month = {
 11 : 'November',
 12 : 'December' }
 
-const today = `${month[d.getMonth()]} ${d.getDay()}, ${d.getFullYear()}`
+const today = `${month[d.getMonth()+1]} ${d.getDate()}, ${d.getFullYear()}`
 class TodoAddBar extends Component {
   constructor() {
     super()
@@ -24,12 +24,13 @@ class TodoAddBar extends Component {
     }
   }
 
-  addToList = (event) => {
+  handleSubmit = (event) => {
     let newTask = {
       id: this.props.totalTodos + 1,
       task: this.state.task,
+      completeBy: today,
       isComplete: false,
-      completeBy: today
+      isCleared: false
     }
 
     this.props.addToList(newTask)
@@ -48,10 +49,10 @@ class TodoAddBar extends Component {
 
   render() {
     const placeHolder = "Enter a new task here..."
-    return <form>
+    return <form onSubmit={this.handleSubmit}>
         <input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} />
         {/* <input type="checkbox" checked={this.state.isComplete} onChange={this.updateCompletion} /> */}
-        <button type="button" onClick={this.addToList}>
+        <button type="button" onClick={this.handleSubmit}>
           Add
         </button>
       </form>

@@ -5,6 +5,7 @@ import TodoAddBar from './TodoAddBar.js'
 import TodoList from './TodoList.js'
 
 const d = new Date()
+console.log(d)
 var month = {
   1: 'January',
   2: 'February',
@@ -19,33 +20,15 @@ var month = {
   11: 'November',
   12: 'December'
 }
-const today = `${month[d.getMonth()]} ${d.getDay()}, ${d.getFullYear()}`
-
-// class TodoApp extends Component {
-//   constructor() {
-//     super()
-//     const { todoList, addToList } = this.props
-//   }
-//   render() {
-//     let {allTasks} = this.props
-//     return (
-//       <div>
-//         <Todo addToList={this.addToList} />
-//         <TodoList todoList={this.todoList}
-//                   toggleComplete={this.toggleComplete} />
-//       </div>
-//     )
-//   }
-// }
-
-
+const today = `${month[d.getMonth()+1]} ${d.getDate()}, ${d.getFullYear()}`
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
       todoList: [
-        { id: 1, task: 'Install Todo App', completeBy: today, isComplete: false }
+        { id: 1, task: 'Install Todo App', completeBy: today, isComplete: false, isCleared: false },
+        { id: 2, task: 'Finish Assignment 5', completeBy: today, isComplete: false, isCleared: false }
       ]
     }
   }
@@ -67,6 +50,15 @@ class App extends Component {
     })
   }
 
+  toggleCleared = item => {
+    let toBeUpdatedList = this.state.todoList
+    let index = toBeUpdatedList.indexOf((item))
+    toBeUpdatedList[index].isCleared = true
+    this.setState({
+      todoList: toBeUpdatedList
+    })
+  }
+
   // updateIsComplete = index => {
   //   let toBeUpdatedList = this.state.todoList
   //   this.setState(prevState => ({
@@ -82,7 +74,8 @@ class App extends Component {
         </header>
         <TodoAddBar totalTodos={this.state.todoList.length} addToList={this.addToList} />
         <TodoList todoList={this.state.todoList}
-                  toggleComplete={this.toggleComplete} />
+                  toggleComplete={this.toggleComplete}
+                  toggleCleared={this.toggleCleared} />
       </div>
     )
   }

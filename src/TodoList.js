@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button, ButtonGroup } from 'reactstrap'
 
 // TodoList + filter capabilities
 class TodoList extends Component {
@@ -7,15 +8,12 @@ class TodoList extends Component {
     this.state = {
       // When no tasks are checked
       disableClear: this.props.todoList.every((item) => { return item.isComplete === false }),
-      viewOnlyActive: true,
-      viewOnlyCompleteCleared: false,
-      viewAll: false,
-      displayedList: this.props.todoList
+      viewSelected: 'Active',
     }
   }
 
   clearCompleted = () => {
-    this.props.todoList.map(item => (item.isComplete === true) ? this.props.toggleCleared(item) : console.log(`Todo ID: ${item.id} was not checked.`) )
+    this.props.todoList.map(item => (item.isComplete === true) ? this.props.toggleCleared(item) : console.log(`Todo ID: ${item.id} was not clear.`) )
     this.setState({ 
       disableClear: true,
     })
@@ -27,20 +25,25 @@ class TodoList extends Component {
     }) 
   }
 
+  onRadioBtnClick = (view) => {
+    this.setState({
+      viewSelected: view
+    })
+  }
+
   render() {
-    const allTasks = this.props.todoList
+    const {todoList} = this.props
     let selectedList
     //Enable Filter
-    {this.state.viewOnlyActive &&
-      (selectedList = allTasks.filter((item) => { return item.isCleared === false }))}
+    {this.state.viewSelected === 'Active' &&
+      (selectedList = todoList.filter((item) => { return item.isCleared === false }))}
     
-    {this.state.viewOnlyCompleteCleared && 
-      (selectedList = allTasks.filter((item) => { return item.isCleared === true }))}
+    {this.state.viewSelected === 'Completed' && 
+      (selectedList = todoList.filter((item) => { return item.isCleared === true }))}
 
-    {this.state.viewAll && 
-      (selectedList = allTasks)}
+    {this.state.viewSelected === 'All' && 
+      (selectedList = todoList)}
     
-    // const itemsToDisplay = this.state.displayedList.map((todoItem) =>
     const itemsToDisplay = selectedList.map((todoItem) =>
       <Todo key={todoItem.id}
             item={todoItem}
@@ -49,7 +52,12 @@ class TodoList extends Component {
     )
     return (
       <div>
-        <button type="button" onClick={this.clearCompleted} disabled={this.state.disableClear}>Clear</button>
+        <ButtonGroup>
+          <Button color="primary" onClick={() => this.onRadioBtnClick('Active')} active={this.state.viewSelected === 'Active'}>Active</Button>
+          <Button color="primary" onClick={() => this.onRadioBtnClick('Completed')} active={this.state.viewSelected === 'Completed'}>Completed</Button>
+          <Button color="primary" onClick={() => this.onRadioBtnClick('All')} active={this.state.viewSelected === 'All'}>All</Button>
+        </ButtonGroup>
+        <Button color="success" onClick={this.clearCompleted} disabled={this.state.disableClear}>Clear</Button>
         {itemsToDisplay}
       </div>
     )

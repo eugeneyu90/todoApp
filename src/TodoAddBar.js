@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 const d = new Date()
 var month = {
@@ -45,17 +46,14 @@ class TodoAddBar extends Component {
     })
   }
 
-  
-
   render() {
     const placeHolder = "Enter a new task here..."
-    return <form onSubmit={this.handleSubmit}>
-        <input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} />
-        {/* <input type="checkbox" checked={this.state.isComplete} onChange={this.updateCompletion} /> */}
-        <button type="button" onClick={this.handleSubmit}>
+    return <Form onSubmit={this.handleSubmit}>
+        <Input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} />
+        <Button color="primary" type="button" onClick={this.handleSubmit}>
           Add
-        </button>
-      </form>
+        </Button>
+      </Form>
   }
 }
 

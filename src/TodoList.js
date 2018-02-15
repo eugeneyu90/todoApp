@@ -19,7 +19,6 @@ class TodoList extends Component {
     this.setState({ 
       disableClear: true,
     })
-    // this.updatedDisplayedList()
   }
 
   checkCompleted = () => {
@@ -28,28 +27,21 @@ class TodoList extends Component {
     }) 
   }
 
-  // updatedDisplayedList = () => {
-  //   if(this.state.viewOnlyActive) {
-  //     this.setState({
-  //       displayedList: this.props.todoList.filter((item) => { return item.isCleared === false })
-  //     })
-  //   } else if(this.state.viewOnlyCompleteCleared) {
-  //     this.setState({
-  //       displayedList: this.props.todoList.filter((item) => { return item.isCleared === true })
-  //     })
-  //   } else if (this.state.viewAll) {
-  //     this.setState({
-  //       displayedList: this.props.todoList
-  //     })
-  //   }
-  // }
-
   render() {
     const allTasks = this.props.todoList
-    const activeList = allTasks.filter((item) => { return item.isCleared === false })
-    // const clearedList = allTasks.filter((item) => { item.isCleared === true })
+    let selectedList
+    //Enable Filter
+    {this.state.viewOnlyActive &&
+      (selectedList = allTasks.filter((item) => { return item.isCleared === false }))}
+    
+    {this.state.viewOnlyCompleteCleared && 
+      (selectedList = allTasks.filter((item) => { return item.isCleared === true }))}
+
+    {this.state.viewAll && 
+      (selectedList = allTasks)}
+    
     // const itemsToDisplay = this.state.displayedList.map((todoItem) =>
-    const itemsToDisplay = activeList.map((todoItem) =>
+    const itemsToDisplay = selectedList.map((todoItem) =>
       <Todo key={todoItem.id}
             item={todoItem}
             toggle={this.props.toggleComplete}

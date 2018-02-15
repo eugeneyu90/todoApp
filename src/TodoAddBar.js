@@ -1,22 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import getToday from './getToday.js'
 
-const d = new Date()
-var month = {
-1: 'January',
-2: 'February',
-3 : 'March',
-4 : 'April',
-5 : 'May',
-6 : 'June',
-7 : 'July',
-8 : 'August',
-9 : 'September',
-10 : 'October',
-11 : 'November',
-12 : 'December' }
-
-const today = `${month[d.getMonth()+1]} ${d.getDate()}, ${d.getFullYear()}`
 class TodoAddBar extends Component {
   constructor() {
     super()
@@ -29,7 +14,7 @@ class TodoAddBar extends Component {
     let newTask = {
       id: this.props.totalTodos + 1,
       task: this.state.task,
-      completeBy: today,
+      completeBy: getToday(),
       isComplete: false,
       isCleared: false
     }
@@ -48,11 +33,13 @@ class TodoAddBar extends Component {
 
   render() {
     const placeHolder = "Enter a new task here..."
-    return <Form onSubmit={this.handleSubmit}>
-        <Input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} />
-        <Button color="primary" type="button" onClick={this.handleSubmit}>
-          Add
-        </Button>
+    return <Form inline onSubmit={this.handleSubmit}>
+        <FormGroup >
+            <Input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} />
+            <Button color="primary" type="button" onClick={this.handleSubmit}>
+              Add
+            </Button>
+        </FormGroup>
       </Form>
   }
 }

@@ -13,7 +13,7 @@ class TodoList extends Component {
   }
 
   clearCompleted = () => {
-    this.props.todoList.map(item => (item.isComplete === true) ? this.props.toggleCleared(item) : console.log(`Todo ID: ${item.id} was not clear.`) )
+    this.props.todoList.map(item => (item.isComplete === true) ? this.props.setCleared(item) : console.log(`Todo ID: ${item.id} was not clear.`) )
     this.setState({ 
       disableClear: true,
     })

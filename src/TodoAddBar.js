@@ -1,6 +1,22 @@
 import React, { Component } from 'react'
 
-class Todo extends Component {
+const d = new Date()
+var month = {
+1: 'January',
+2: 'February',
+3 : 'March',
+4 : 'April',
+5 : 'May',
+6 : 'June',
+7 : 'July',
+8 : 'August',
+9 : 'September',
+10 : 'October',
+11 : 'November',
+12 : 'December' }
+
+const today = `${month[d.getMonth()]} ${d.getDay()}, ${d.getFullYear()}`
+class TodoAddBar extends Component {
   constructor() {
     super()
     this.state = {
@@ -13,7 +29,7 @@ class Todo extends Component {
       id: this.props.totalTodos + 1,
       task: this.state.task,
       isComplete: false,
-      completeBy: new Date()
+      completeBy: today
     }
 
     this.props.addToList(newTask)
@@ -42,4 +58,4 @@ class Todo extends Component {
   }
 }
 
-export default Todo
+export default TodoAddBar

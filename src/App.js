@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
-import Todo from './Todo.js'
+import TodoAddBar from './TodoAddBar.js'
 import TodoList from './TodoList.js'
 
 const d = new Date()
-const today = `${d.getMonth()}-${d.getDay()}-${d.getFullYear()}`
-console.log(today)
+var month = {
+  1: 'January',
+  2: 'February',
+  3: 'March',
+  4: 'April',
+  5: 'May',
+  6: 'June',
+  7: 'July',
+  8: 'August',
+  9: 'September',
+  10: 'October',
+  11: 'November',
+  12: 'December'
+}
+const today = `${month[d.getMonth()]} ${d.getDay()}, ${d.getFullYear()}`
 
 // class TodoApp extends Component {
 //   constructor() {
@@ -67,7 +80,7 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">To Do App</h1>
         </header>
-        <Todo totalTodos={this.state.todoList.length} addToList={this.addToList} />
+        <TodoAddBar totalTodos={this.state.todoList.length} addToList={this.addToList} />
         <TodoList todoList={this.state.todoList}
                   toggleComplete={this.toggleComplete} />
       </div>

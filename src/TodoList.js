@@ -4,13 +4,9 @@ class TodoList extends Component {
   render() {
     const tasks = this.props.todoList
     let todoItems = tasks.map((todoItem) =>
-      <TodoItem key={todoItem.id}
+      <Todo key={todoItem.id}
                 item={todoItem}
-                // task={todoItem.task}
-                // checkBoxStatus={todoItem.isComplete}
                 toggle={this.props.toggleComplete} />
-        // <p>  {todoItem.task} <input type="checkbox" checked={todoItem.isComplete} onChange={this.updateCompletion} />
-        // </p>
     )
     return (
       <div>
@@ -20,7 +16,7 @@ class TodoList extends Component {
   }
 }
 
-class TodoItem extends Component {
+class Todo extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -40,7 +36,7 @@ class TodoItem extends Component {
     const {task, isComplete, completeBy} = this.props.item
     return (
       <div> 
-        <span> {task} by [{completeBy}] </span>
+        <span> {task} by {completeBy}</span>
         <input type="checkbox" 
                 checked={isComplete}
                 onChange={this.toggleClick} />

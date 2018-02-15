@@ -4,23 +4,19 @@ class Todo extends Component {
   constructor() {
     super()
     this.state = {
-      task: '',
-      isComplete: false,
-      completeBy: 'Monday',
-      placeHolder: 'Enter your task here...'
+      task: ''
     }
-    // this.addTask = this.addTask.bind(this)
-    // this.updateTask = this.updateTask.bind(this)
-    // this.updateCompletion = this.updateCompletion.bind(this)
   }
 
-  addTask = (event) => {
+  addToList = (event) => {
     let newTask = {
+      id: this.props.totalTodos + 1,
       task: this.state.task,
-      completeBy: this.state.completeBy,
-      isComplete: this.state.isComplete
+      isComplete: false,
+      completeBy: new Date()
     }
-    this.props.addNewTask(newTask)
+
+    this.props.addToList(newTask)
     this.setState({
       task: ''
     })
@@ -35,10 +31,11 @@ class Todo extends Component {
   
 
   render() {
+    const placeHolder = "Enter a new task here..."
     return <form>
-        <input type="text" value={this.state.task} placeholder={this.state.placeHolder} onChange={this.updateTask}/>
+        <input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} />
         {/* <input type="checkbox" checked={this.state.isComplete} onChange={this.updateCompletion} /> */}
-        <button type="button" onClick={this.addTask}>
+        <button type="button" onClick={this.addToList}>
           Add
         </button>
       </form>

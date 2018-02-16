@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, FormFeedback, FormText } from 'reactstrap';
 import getToday from './getToday.js'
 
 class TodoAddBar extends Component {
@@ -10,9 +10,9 @@ class TodoAddBar extends Component {
     }
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = () => {
     let newTask = {
-      id: this.props.totalTodos + 1,
+      id: this.props.lastID + 1,
       task: this.state.task,
       completeBy: getToday(),
       isComplete: false,
@@ -33,14 +33,22 @@ class TodoAddBar extends Component {
 
   render() {
     const placeHolder = "Enter a new task here..."
-    return <Form inline onSubmit={this.handleSubmit}>
-        <FormGroup >
-            <Input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} />
-            <Button color="primary" type="button" onClick={this.handleSubmit}>
-              Add
-            </Button>
-        </FormGroup>
-      </Form>
+
+    const styles = {
+      flex: {
+        display: 'flex'
+      }
+    }
+    return (
+      // <Form inline onSubmit={() => {return false}}>
+      //   <FormGroup >
+        <div style={styles.flex}>
+            <Input type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} onKeyDown={(event) => { if(event.keyCode === 13) { this.handleSubmit() }}}/>
+            <Button color="primary" type="button" onClick={this.handleSubmit}>Add</Button>
+        </div>
+      //   </FormGroup>
+      // </Form>
+    )
   }
 }
 

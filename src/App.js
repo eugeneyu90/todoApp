@@ -3,61 +3,60 @@ import React, { Component } from 'react'
 import './App.css'
 import TodoAddBar from './TodoAddBar.js'
 import TodoList from './TodoList.js'
-import { Button } from 'reactstrap'
 import getToday from './getToday.js'
+
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
       todoList: [
-        { id: 1, task: 'Install Todo App', completeBy: getToday(), isComplete: false, isCleared: true },
+        { id: 1, task: 'Install Todo App', completeBy: getToday(), isComplete: false, isCleared: false },
         { id: 2, task: 'Finish Assignment 5', completeBy: getToday(), isComplete: false, isCleared: false }
       ]
     }
   }
 
   addToList = task => { //handleNewTodo???
-    let toBeUpdatedList = this.state.todoList
-    toBeUpdatedList.push(task)
+    // let updatedList = this.state.todoList
+    // updatedList.push(task)
     this.setState({
-      todoList: toBeUpdatedList
+      //todoList: updatedList
+      todoList: this.state.todoList.concat(task) // Using concat to clean code. 
     })
   }
 
   toggleComplete = item => { //handleCompleted???
-    let toBeUpdatedList = this.state.todoList
-    let index = toBeUpdatedList.indexOf((item))
-    toBeUpdatedList[index].isComplete = !toBeUpdatedList[index].isComplete
+    let updatedList = this.state.todoList
+    let index = updatedList.indexOf((item))
+    updatedList[index].isComplete = !updatedList[index].isComplete
     this.setState({
-      todoList: toBeUpdatedList
+      todoList: updatedList
     })
   }
 
   setCleared = item => { //handleCleared???
-    let toBeUpdatedList = this.state.todoList
-    let index = toBeUpdatedList.indexOf((item))
-    toBeUpdatedList[index].isCleared = true
+    let updatedList = this.state.todoList
+    let index = updatedList.indexOf((item))
+    updatedList[index].isCleared = true
     this.setState({
-      todoList: toBeUpdatedList
+      todoList: updatedList
     })
   }
 
-  // updateIsComplete = index => {
-  //   let toBeUpdatedList = this.state.todoList
-  //   this.setState(prevState => ({
-  //     toBeUpdatedList[index].isComplete: !prevState.isComplete
-  //   }))
-  // }
+  changeTask = item => {
+
+  }
 
   render() {
+    const {todoList} = this.state
     return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">To Do App</h1>
         </header>
-        <TodoAddBar totalTodos={this.state.todoList.length} addToList={this.addToList} />
-        <TodoList todoList={this.state.todoList}
+        <TodoAddBar lastID={todoList[todoList.length-1].id} addToList={this.addToList} />
+        <TodoList todoList={todoList}
                   toggleComplete={this.toggleComplete}
                   setCleared={this.setCleared} />
       </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Badge } from 'reactstrap'
+import { Button, ButtonGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Badge, ButtonToolbar } from 'reactstrap'
 // import 'font-awesome/css/font-awesome.min.css'
 
 
@@ -29,37 +29,52 @@ class TodoList extends Component {
   }
 
   render() {
-    const {todoList} = this.props
-
+    const { todoList } = this.props
+    const { viewSelected } = this.state
     let selectedList
     // Filter list into new array to be mapped
-    this.state.viewSelected === 'Active' &&
+    viewSelected === 'Active' &&
       (selectedList = todoList.filter((item) => { return item.isCleared === false }))
     
-    this.state.viewSelected === 'Completed' &&
+    viewSelected === 'Completed' &&
       (selectedList = todoList.filter((item) => { return item.isCleared === true }))
 
-    this.state.viewSelected === 'All' && 
+    viewSelected === 'All' && 
       (selectedList = todoList) 
     
     const disableClear = selectedList.every((item) => { return item.isComplete === false || item.isCleared === true })
+    const activeNum = todoList.reduce((acc, cur) => { return acc + !cur.isCleared }, 0)
+    const completedNum = todoList.reduce((acc, cur) => { return acc + cur.isComplete }, 0)
     const itemsToDisplay = selectedList.map((item) => 
       <Todo key={item.id}
             item={item}
             toggle={this.props.toggleComplete}
             checkCompleted={this.checkCompleted} />
     )
-    return (
-      <div>
-        <ButtonGroup>
-          <Button color="primary" onClick={() => this.onRadioBtnClick('Active')} active={this.state.viewSelected === 'Active'}>Active</Button>
-          <Button color="primary" onClick={() => this.onRadioBtnClick('Completed')} active={this.state.viewSelected === 'Completed'}>Completed</Button>
-          <Button color="primary" onClick={() => this.onRadioBtnClick('All')} active={this.state.viewSelected === 'All'}>All</Button>
-        </ButtonGroup>
-        <Button color="success" onClick={this.clearCompleted} disabled={disableClear || (this.state.viewSelected === 'Completed')}>Clear Completed</Button>
+    const styles = {
+      inlineBlock: {
+        display: 'inline-block'
+      }
+    }
+    return <div>
+        <ButtonToolbar>
+          <ButtonGroup className={'btn-group-justified'} style={styles.inlineBlock}>
+            <Button href="#" color="primary" onClick={() => this.onRadioBtnClick('Active')} active={viewSelected === 'Active'}>
+              Active <Badge color="secondary">{activeNum}</Badge>
+            </Button>
+            <Button href="#" color="primary" onClick={() => this.onRadioBtnClick('Completed')} active={viewSelected === 'Completed'}>
+              Completed <Badge color="secondary">{completedNum}</Badge>
+            </Button>
+            <Button href="#" color="primary" onClick={() => this.onRadioBtnClick('All')} active={viewSelected === 'All'}>
+              All <Badge color="secondary">{todoList.length}</Badge>
+            </Button>
+            <Button href="#" color="success" onClick={this.clearCompleted} disabled={disableClear || viewSelected === 'Completed'}>
+              Clear Completed
+            </Button>
+          </ButtonGroup>
+        </ButtonToolbar>
         {itemsToDisplay}
       </div>
-    )
   }
 }
 
@@ -95,7 +110,7 @@ class Todo extends Component {
           </InputGroupAddon>
           <Input readOnly={true} style={{...styles.noGreyOut, ...showLineThrough}} type="text" value={`${task} by ${completeBy}`} />
           <InputGroupAddon addonType="append">{showClearMeMessage}</InputGroupAddon>
-          <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+          <Button><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span></Button>
         </InputGroup>
       </div>
     )

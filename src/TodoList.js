@@ -44,7 +44,7 @@ class TodoList extends Component {
     
     const disableClear = selectedList.every((item) => { return item.isComplete === false || item.isCleared === true })
     const activeNum = todoList.reduce((acc, cur) => { return acc + !cur.isCleared }, 0)
-    const completedNum = todoList.reduce((acc, cur) => { return acc + cur.isComplete }, 0)
+    const completedNum = todoList.reduce((acc, cur) => { return acc + (cur.isComplete && cur.isCleared ) }, 0)
     const itemsToDisplay = selectedList.map((item) => 
       <Todo key={item.id}
             item={item}

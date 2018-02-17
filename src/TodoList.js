@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Badge, ButtonToolbar } from 'reactstrap'
+import { Button, ButtonGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Badge, ButtonToolbar, Tooltip } from 'reactstrap'
+
+
 // import 'font-awesome/css/font-awesome.min.css'
 
 
@@ -16,7 +18,7 @@ class TodoList extends Component {
 
   clearCompleted = () => {
     // Goes through each item in todoList using map function and if item is checked as completed -> run setCleared function.
-    this.props.todoList.map(item => (item.isComplete === true) ? this.props.setCleared(item) : console.log(`Todo ID: ${item.id} was not cleared.`) )
+    this.props.todoList.map(item => (item.isComplete === true) ? this.props.setCleared(item) : null)
     this.setState({ 
       disableClear: true,
     })
@@ -37,25 +39,28 @@ class TodoList extends Component {
       (selectedList = todoList.filter((item) => { return item.isCleared === false }))
     
     viewSelected === 'Completed' &&
-      (selectedList = todoList.filter((item) => { return item.isCleared === true }))
+    (selectedList = todoList.filter((item) => { return item.isCleared === true || item.isComplete === true }))    
 
     viewSelected === 'All' && 
       (selectedList = todoList) 
     
     const disableClear = selectedList.every((item) => { return item.isComplete === false || item.isCleared === true })
     const activeNum = todoList.reduce((acc, cur) => { return acc + !cur.isCleared }, 0)
-    const completedNum = todoList.reduce((acc, cur) => { return acc + (cur.isComplete && cur.isCleared ) }, 0)
+    const completedNum = todoList.reduce((acc, cur) => { return acc + (cur.isComplete && cur.isCleared) }, 0)
+    // const completedNum = todoList.reduce((acc, cur) => { return acc + cur.isComplete}, 0)
     const itemsToDisplay = selectedList.map((item) => 
       <Todo key={item.id}
             item={item}
             toggle={this.props.toggleComplete}
-            checkCompleted={this.checkCompleted} />
+            checkCompleted={this.checkCompleted}
+            updateTask={this.props.updateTask} />
     )
     const styles = {
       inlineBlock: {
         display: 'inline-block'
       }
     }
+
     return <div>
         <ButtonToolbar>
           <ButtonGroup className={'btn-group-justified'} style={styles.inlineBlock}>
@@ -80,44 +85,99 @@ class TodoList extends Component {
 
 // Individual Todo's
 class Todo extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      // showClearHint: (this.props.item.isComplete && !this.props.item.isCleared)
+      editOn: false,
+      task: this.props.item.task
+    }
+  }
 
   toggleClick = () => {
     this.props.toggle(this.props.item)
+    // this.setState({
+    //   showClearHint: (this.props.item.isComplete && !this.props.item.isCleared)
+    // })
+  }
+
+  enableEdit = () => {
+    this.setState({
+      editOn: !this.state.editOn
+    })
+  }
+
+  updateTask = (event) => {
+    this.setState({
+      task: event.target.value
+    })
+    this.props.updateTask(this.props.item, event.target.value)
   }
 
   render() {
-    const { task, completeBy, isComplete, isCleared } = this.props.item
+    const { id, isComplete, isCleared } = this.props.item
     const styles = {
+      // Include readOnly attribute with no change in styling
       noGreyOut: {
         backgroundColor: 'white'
+      },
+      alignTextBottom: {
+        verticalAlign: 'bottom',
+        textAlign: 'bottom'
+      },
+      clearHint: {
+        color: 'darkblue',
+        backgroundColor: 'lightblue',
+
       },
       completed: {
         textDecoration: 'line-through',
         color: 'grey'
+      },
+      clearableTooltipOffset: {
+        marginRight: 25,
+        verticalAlign: 'bottom'
+      },
+      canEdit: {
+        color: 'black',
+        backgroundColor: '#7bdcb5'
+      },
+      cannotEdit: {
+        color: 'darkgray'
+      },
+      transparentButton: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent' 
+      },
+      checked: {
+        color: 'lightgreen'
+      },
+      unchecked: {
+        color: 'grey'
       }
     }
     // Conditional Rendering 
-    const showClearMeMessage = isComplete && !isCleared ? 'Clear Me' : null
-    const showLineThrough = isComplete ? styles.completed : null  
-    // Include readOnly attribute with no change in styling
+    // const showClearMeMessage = isComplete && !isCleared ? 'Clear Me' : false
+    const showLineThrough = isComplete ? styles.completed : false 
+    const editOrNot = this.state.editOn ? styles.canEdit : styles.cannotEdit
+    const showClearHint = isComplete && !isCleared
+
     return (
       <div>
-        <InputGroup >
-          <InputGroupAddon addonType="prepend">
-            <InputGroupText>
-              <Input addon type="checkbox" checked={isComplete} onChange={this.toggleClick} />
-            </InputGroupText>
-          </InputGroupAddon>
-          <Input readOnly={true} style={{...styles.noGreyOut, ...showLineThrough}} type="text" value={`${task} by ${completeBy}`} />
-          <InputGroupAddon addonType="append">{showClearMeMessage}</InputGroupAddon>
-          <Button><span className="glyphicon glyphicon-pencil" aria-hidden="true"></span></Button>
+        <InputGroup>
+          <Button style={styles.transparentButton} type="button" onClick={this.toggleClick}>
+            <span className="glyphicon glyphicon-ok" style={isComplete ? styles.checked : styles.unchecked} aria-hidden="true"></span>
+          </Button>
+          <Input id={`item${id}`} readOnly={!this.state.editOn} style={{...styles.noGreyOut, ...showLineThrough, ...editOrNot}} type="text" value={this.state.task} onChange={this.updateTask}/>
+          <Tooltip style={styles.clearableTooltipOffset} placement="left" isOpen={showClearHint} target={`item${id}`}>
+            Clearable
+          </Tooltip>
+          <Button style={styles.transparentButton} onClick={this.enableEdit}>
+            <span className="glyphicon glyphicon-pencil" style={this.state.editOn ? styles.checked : styles.unchecked} aria-hidden="true" ></span>
+          </Button>
         </InputGroup>
       </div>
     )
-      // <span>
-      //   {task} by {completeBy}
-      // </span>
-      // <input type="checkbox" checked={isComplete} onChange={this.toggleClick} />
   }
 }
 

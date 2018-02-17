@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 // import logo from './logo.svg'
 import './App.css'
+import logo from './todo.svg'
 import TodoAddBar from './TodoAddBar.js'
 import TodoList from './TodoList.js'
 import getToday from './getToday.js'
@@ -44,21 +45,37 @@ class App extends Component {
     })
   }
 
-  changeTask = item => {
-
+  updateTask = (item, newTask) => {
+    let updatedList = this.state.todoList
+    let index = updatedList.indexOf((item))
+    updatedList[index].task = newTask
+    this.setState({
+      todoList: updatedList
+    })
   }
 
   render() {
+    const styles = {
+      logo: {
+        padding: 5,
+        width: 40,
+        height: 40
+      },
+      banner: {
+        backgroundColor: 'rgb(0,191,255)'
+      }
+    }
     const {todoList} = this.state
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">To Do App</h1>
+        <header style={styles.banner}>
+          <img src={logo} style={styles.logo} alt="logo" />
         </header>
         <TodoAddBar lastID={todoList[todoList.length-1].id} addToList={this.addToList} />
         <TodoList todoList={todoList}
                   toggleComplete={this.toggleComplete}
-                  setCleared={this.setCleared} />
+                  setCleared={this.setCleared}
+                  updateTask={this.updateTask} />
       </div>
     )
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, Input } from 'reactstrap';
+import { Button, Form, Input } from 'reactstrap'
 import getToday from './getToday.js'
 
 class TodoAddBar extends Component {
@@ -35,7 +35,8 @@ class TodoAddBar extends Component {
   updateTask = (event) => {
     this.setState({
       task: event.target.value
-    })  
+    })
+
   }
 
   render() {
@@ -49,7 +50,9 @@ class TodoAddBar extends Component {
     return (
       <Form style={styles.flex} onSubmit={(event) => {event.preventDefault()}}>
         <Input valid={!this.state.isEmptyOnSubmit} type="text" value={this.state.task} placeholder={placeHolder} onChange={this.updateTask} onKeyDown={(event) => {if(event.keyCode === 13) this.handleSubmit()}}/>
-        <Button color="primary" type="button" onClick={this.handleSubmit}>Add</Button>
+        <Button color="primary" type="button" onClick={this.handleSubmit}>
+          <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </Button>
       </Form>
     )
   }

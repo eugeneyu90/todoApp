@@ -1,9 +1,5 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Badge, ButtonToolbar, Tooltip } from 'reactstrap'
-
-
-// import 'font-awesome/css/font-awesome.min.css'
-
+import { Button, ButtonGroup, InputGroup, Input, Badge, ButtonToolbar, Tooltip } from 'reactstrap'
 
 // TodoList + filter capabilities
 class TodoList extends Component {
@@ -58,47 +54,68 @@ class TodoList extends Component {
     const styles = {
       inlineBlock: {
         display: 'inline-block'
+      },
+      congratsMessage: {
+        color: '#1F22A4',
+        marginTop: 20,
+        fontSize: '2rem'
+      },
+      buttonFont: {
+        fontSize: '1.4rem'
       }
     }
 
     return <div>
         <ButtonToolbar>
           <ButtonGroup className={'btn-group-justified'} style={styles.inlineBlock}>
-            <Button href="#" color="primary" onClick={() => this.onRadioBtnClick('Active')} active={viewSelected === 'Active'}>
+            <Button href="#" 
+                    color="primary"
+                    style={styles.buttonFont}
+                    onClick={() => this.onRadioBtnClick('Active')}
+                    active={viewSelected === 'Active'}>
               Active <Badge color="secondary">{activeNum}</Badge>
             </Button>
-            <Button href="#" color="primary" onClick={() => this.onRadioBtnClick('Completed')} active={viewSelected === 'Completed'}>
+            <Button href="#" 
+                    color="primary" 
+                    style={styles.buttonFont}
+                    onClick={() => this.onRadioBtnClick('Completed')} 
+                    active={viewSelected === 'Completed'}>
               Completed <Badge color="secondary">{completedNum}</Badge>
             </Button>
-            <Button href="#" color="primary" onClick={() => this.onRadioBtnClick('All')} active={viewSelected === 'All'}>
+            <Button href="#" 
+                    color="primary" 
+                    style={styles.buttonFont}
+                    onClick={() => this.onRadioBtnClick('All')} 
+                    active={viewSelected === 'All'}>
               All <Badge color="secondary">{todoList.length}</Badge>
             </Button>
-            <Button href="#" color="success" onClick={this.clearCompleted} disabled={disableClear || viewSelected === 'Completed'}>
+            <Button href="#" 
+                    color="success" 
+                    style={styles.buttonFont}
+                    onClick={this.clearCompleted} 
+                    disabled={disableClear || viewSelected === 'Completed'}>
               Clear Completed
             </Button>
           </ButtonGroup>
         </ButtonToolbar>
-        {itemsToDisplay}
+        {(itemsToDisplay.length === 0 && viewSelected === 'Active') ? 
+          <h3 className="lead" style={styles.congratsMessage}>Congrats! You have no more to-do's!</h3> : itemsToDisplay }
       </div>
   }
 }
 
-// Individual Todo's
+// Individual Todo Component
 class Todo extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      // showClearHint: (this.props.item.isComplete && !this.props.item.isCleared)
       editOn: false,
       task: this.props.item.task
     }
   }
 
-  toggleClick = () => {
+  toggleClick = (event) => {
     this.props.toggle(this.props.item)
-    // this.setState({
-    //   showClearHint: (this.props.item.isComplete && !this.props.item.isCleared)
-    // })
   }
 
   enableEdit = () => {
@@ -115,65 +132,92 @@ class Todo extends Component {
   }
 
   render() {
-    const { id, isComplete, isCleared } = this.props.item
+    const { id, task, isComplete, isCleared, completed } = this.props.item
     const styles = {
       // Include readOnly attribute with no change in styling
       noGreyOut: {
-        backgroundColor: 'white'
-      },
-      alignTextBottom: {
-        verticalAlign: 'bottom',
-        textAlign: 'bottom'
+        backgroundColor: 'transparent',
+        borderColor: 'lightgrey',
+        borderWidth: 0.25,
+        borderBottomWidth: 0.5
       },
       clearHint: {
         color: 'darkblue',
         backgroundColor: 'lightblue',
-
       },
       completed: {
         textDecoration: 'line-through',
-        color: 'grey'
+        color: '#5BC16C'
       },
-      clearableTooltipOffset: {
-        marginRight: 25,
+      clearableTooltip: {
+        color: 'white',
+        fontSize: '1rem',
+        backgroundColor: '#050755',
+        marginRight: 40,
         verticalAlign: 'bottom'
       },
       canEdit: {
         color: 'black',
-        backgroundColor: '#7bdcb5'
+        backgroundColor: '#D7F9DD'
       },
       cannotEdit: {
-        color: 'darkgray'
+        color: 'black'
       },
       transparentButton: {
-        backgroundColor: 'transparent',
-        borderColor: 'transparent' 
+        backgroundColor: 'white',
+        borderColor: 'lightgrey'
+      },
+      editOnButton: {
+        backgroundColor: '#D7F9DD',
+        borderColor: 'transparent'
       },
       checked: {
-        color: 'lightgreen'
+        color: '#5BC16C',
       },
       unchecked: {
-        color: 'grey'
+        color: '#D4DDDF'
+      },
+      inputFont: {
+        fontSize: '1.4rem'
       }
     }
     // Conditional Rendering 
-    // const showClearMeMessage = isComplete && !isCleared ? 'Clear Me' : false
     const showLineThrough = isComplete ? styles.completed : false 
     const editOrNot = this.state.editOn ? styles.canEdit : styles.cannotEdit
     const showClearHint = isComplete && !isCleared
+    const itemId = `item${id}`
+    const customTask = isComplete ? `${task} ---- Done ${completed}` : task
 
     return (
       <div>
         <InputGroup>
-          <Button style={styles.transparentButton} type="button" onClick={this.toggleClick}>
-            <span className="glyphicon glyphicon-ok" style={isComplete ? styles.checked : styles.unchecked} aria-hidden="true"></span>
+          <Button style={{...this.state.editOn ? styles.editOnButton : styles.transparentButton, ...styles.inputFont}}
+                  type="button"
+                  onClick={this.toggleClick}>
+            <span className="glyphicon glyphicon-ok"
+                  style={isComplete ? styles.checked : styles.unchecked}
+                  aria-hidden="true">
+            </span>
           </Button>
-          <Input id={`item${id}`} readOnly={!this.state.editOn} style={{...styles.noGreyOut, ...showLineThrough, ...editOrNot}} type="text" value={this.state.task} onChange={this.updateTask}/>
-          <Tooltip style={styles.clearableTooltipOffset} placement="left" isOpen={showClearHint} target={`item${id}`}>
+          <Input id={itemId}
+                 readOnly={!this.state.editOn}
+                 style={{...styles.noGreyOut, ...editOrNot, ...showLineThrough, ...styles.inputFont}}
+                 type="text"
+                 value={customTask}
+                 onChange={this.updateTask}
+                 ref={(input) => { this.textInput = input }} />
+          <Tooltip style={styles.clearableTooltip}
+                   placement="left"
+                   isOpen={showClearHint}
+                   target={itemId}>
             Clearable
           </Tooltip>
-          <Button style={styles.transparentButton} onClick={this.enableEdit}>
-            <span className="glyphicon glyphicon-pencil" style={this.state.editOn ? styles.checked : styles.unchecked} aria-hidden="true" ></span>
+          <Button style={{...this.state.editOn ? styles.editOnButton : styles.transparentButton, ...styles.inputFont}}
+                  onClick={this.enableEdit}>
+            <span className="glyphicon glyphicon-pencil"
+                  style={this.state.editOn ? styles.checked : styles.unchecked}
+                  aria-hidden="true" >
+            </span>
           </Button>
         </InputGroup>
       </div>

@@ -12,17 +12,14 @@ class App extends Component {
     super()
     this.state = {
       todoList: [
-        { id: 1, task: 'Install Todo App', completeBy: getToday(), isComplete: false, isCleared: false },
-        { id: 2, task: 'Finish Assignment 5', completeBy: getToday(), isComplete: false, isCleared: false }
+        { id: 1, task: 'Install Todo App', completeBy: null, completed: null, isComplete: false, isCleared: false },
+        { id: 2, task: 'Finish Assignment 5', completeBy: null, completed: null, isComplete: false, isCleared: false }
       ]
     }
   }
 
   addToList = task => { //handleNewTodo???
-    // let updatedList = this.state.todoList
-    // updatedList.push(task)
     this.setState({
-      //todoList: updatedList
       todoList: this.state.todoList.concat(task) // Using concat to clean code. 
     })
   }
@@ -31,6 +28,7 @@ class App extends Component {
     let updatedList = this.state.todoList
     let index = updatedList.indexOf((item))
     updatedList[index].isComplete = !updatedList[index].isComplete
+    updatedList[index].completed === null ? updatedList[index].completed = getToday() : updatedList[index].completed = null
     this.setState({
       todoList: updatedList
     })
@@ -58,20 +56,23 @@ class App extends Component {
     const styles = {
       logo: {
         padding: 5,
-        width: 40,
-        height: 40
+        width: 50,
+        height: 50
       },
       banner: {
-        backgroundColor: 'rgb(0,191,255)'
+        backgroundColor: '#1F22A4'
       }
     }
     const {todoList} = this.state
     return (
-      <div className="App">
+      <div className="App container-fluid">
         <header style={styles.banner}>
-          <img src={logo} style={styles.logo} alt="logo" />
+          <img src={logo}
+               style={styles.logo}
+               alt="logo" />
         </header>
-        <TodoAddBar lastID={todoList[todoList.length-1].id} addToList={this.addToList} />
+        <TodoAddBar lastID={todoList[todoList.length-1].id}
+                    addToList={this.addToList} />
         <TodoList todoList={todoList}
                   toggleComplete={this.toggleComplete}
                   setCleared={this.setCleared}

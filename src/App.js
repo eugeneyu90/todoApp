@@ -52,6 +52,19 @@ class App extends Component {
     })
   }
 
+  componentWillUpdate() {
+    localStorage.setItem('todos', JSON.stringify(this.state.todoList))
+  }
+
+  componentWillMount() {
+    let todoList = JSON.parse(localStorage.getItem('todos'))
+    if(todoList) {
+      this.setState({
+        todoList: todoList
+      })
+    }
+  }
+
   render() {
     const styles = {
       logo: {

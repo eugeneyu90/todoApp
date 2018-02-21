@@ -26,6 +26,19 @@ class TodoList extends Component {
     })
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    localStorage.setItem('viewSelected', nextState.viewSelected)
+  }
+
+  componentWillMount() {
+    let viewSelected = localStorage.getItem('viewSelected')
+    if(viewSelected) {
+      this.setState({
+        viewSelected: viewSelected
+      })
+    }
+  }
+
   render() {
     const { todoList } = this.props
     const { viewSelected } = this.state
@@ -119,9 +132,9 @@ class Todo extends Component {
   }
 
   enableEdit = () => {
-    this.setState({
-      editOn: !this.state.editOn
-    })
+    this.setState(prevState => ({
+      editOn: !prevState.editOn
+    }))
   }
 
   updateTask = (event) => {
@@ -130,6 +143,27 @@ class Todo extends Component {
     })
     this.props.updateTask(this.props.item, event.target.value)
   }
+
+  shouldComponentUpdate() {
+    console.log(`shouldComponentUpdate returns true`);
+    return true
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(`ComponentDidUpdate:  prevState = `)
+    console.log(prevState)
+
+    this.state.editOn && this.state.editOn !== prevState.editOn ? this.textInput.focus() || this.textInput.select() : console.log('editOn is false')
+    
+  }
+  
+  componentWillUpdate(nextProps, nextState) {
+    console.log(`ComponentWillUpdate:  nextState = `)
+    console.log(nextState)
+  }
+  
+
+
 
   render() {
     const { id, task, isComplete, isCleared, completed } = this.props.item
@@ -153,7 +187,7 @@ class Todo extends Component {
         color: 'white',
         fontSize: '1rem',
         backgroundColor: '#050755',
-        marginRight: 40,
+        marginRight: 43,
         verticalAlign: 'bottom'
       },
       canEdit: {
@@ -205,7 +239,8 @@ class Todo extends Component {
                  type="text"
                  value={customTask}
                  onChange={this.updateTask}
-                 ref={(input) => { this.textInput = input }} />
+                 // Bootstrap Input uses innerRef instead of ref [ref will only get you a reference to the Input component, use innerRef to get a reference to the DOM input (for things like focus management).]
+                 innerRef={(input) => { this.textInput = input }} />
           <Tooltip style={styles.clearableTooltip}
                    placement="left"
                    isOpen={showClearHint}
